@@ -1,4 +1,6 @@
-DELIMITER $$
+DROP procedure IF EXISTS insertInvestment;
+DROP procedure IF EXISTS updateNumberOfShares;
+
 DELIMITER $$
 CREATE PROCEDURE insertInvestment(
 IN p_InvestorID INT,
@@ -50,9 +52,10 @@ IN new_num_shares INT
 )
 BEGIN
 -- Update the investment in the Investment table where InvestmentID = p_investmentID
-update investment SET ivestment.NumShares = new_num_shares WHERE investment.InvestmentID=p_investmentID;
+update investment SET investment.NumShares = new_num_shares WHERE investment.InvestmentID=p_investmentID;
 END$$
 DELIMITER ;
+
 
 DELIMITER $$
 CREATE PROCEDURE DeleteInvestment(
