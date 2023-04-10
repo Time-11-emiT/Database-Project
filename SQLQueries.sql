@@ -121,13 +121,37 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
-CREATE PROCEDURE findCorrelation(
-	IN p_investmentID1 INT,
-    IN p_investmentID2 INT
-)
-BEGIN
-	SELECT CORR(pm1.AnnualizedReturn, pm2.AnnualizedReturn) AS Correlation FROM Performance_Metrics pm1 JOIN Performance_Metrics pm2 ON pm1.PerformanceMetricsID <> pm2.PerformanceMetricsID WHERE pm1.InvestmentID = p_investmentID1 AND pm2.InvestmentID = p_investmentID2;
-END$$
+CREATE PROCEDURE CalculateCorrelation(IN id1 INT, IN id2 INT)
+     BEGIN
+         DECLARE x FLOAT;
+         DECLARE y FLOAT;
+         DECLARE x_sum FLOAT;
+         DECLARE y_sum FLOAT;
+         DECLARE x_squared_sum FLOAT;
+         DECLARE y_squared_sum FLOAT;
+         DECLARE xy_sum FLOAT;
+         DECLARE n INT;
+         
+         SELECT COUNT(*) INTO n FROM Market_Data WHERE InvestmentID = id1 OR InvestmentID = id2;
+         
+         IF n < 2 THEN
+             SELECT 'Not enough data points available' AS Error;
+         ELSE
+             SELECT SUM(CASE WHEN InvestmentID = id1 THEN StockPrice ELSE 0 END),
+                    SUM(CASE WHEN InvestmentID = id2 THEN StockPrice ELSE 0 END),
+                    SUM(CASE WHEN InvestmentID = id1 THEN StockPrice*StockPrice ELSE 0 END),
+                    SUM(CASE WHEN InvestmentID = id2 THEN StockPrice*StockPrice ELSE 0 END),
+                    SUM(CASE WHEN InvestmentID = id1 THEN StockPrice ELSE 0 END * CASE WHEN InvestmentID = id2 THEN StockPrice ELSE 0 END)
+             INTO x_sum, y_sum, x_squared_sum, y_squared_sum, xy_sum
+             FROM Market_Data
+             WHERE InvestmentID = id1 OR InvestmentID = id2;
+     
+             SET x = (n * xy_sum - x_sum * y_sum) / (n * x_squared_sum - x_sum * x_sum);
+             SET y = (y_sum - x * x_sum) / n;
+     
+             SELECT x AS Correlation;
+         END IF;
+     END$$
 DELIMITER ;
 
 DELIMITER $$
