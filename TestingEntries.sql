@@ -5,4 +5,6 @@ CALL DeleteInvestment(1);
 CALL getTotalReturns();
 CALL getStockPrices('2023-04-10');
 CALL getAverageAnnualizedReturn();
+CALL filterByRiskLevel();
+
 
