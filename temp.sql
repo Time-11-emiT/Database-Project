@@ -1,5 +1,3 @@
-DROP procedure insertInvestment;
-
 DELIMITER $$
 CREATE PROCEDURE insertInvestment(
 IN p_InvestorID INT,
