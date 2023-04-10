@@ -1,6 +1,13 @@
 DELIMITER $$
+DELIMITER $$
 CREATE PROCEDURE insertInvestment(
+IN p_InvestorID INT,
+IN p_FirstName VARCHAR(50),
+IN p_LastName VARCHAR(50),
+IN p_Email VARCHAR(50), 
+IN p_Password VARCHAR(50),
 IN p_PortfolioID INT,
+IN p_PortfolioName VARCHAR(50),
 IN p_InvestmentName VARCHAR(50),
 IN p_InvestmentType VARCHAR(50),
 IN p_NumShares INT,
@@ -14,6 +21,12 @@ IN p_RiskLevel FLOAT
 )
 BEGIN
 -- Insert the investment into the Investment table
+INSERT INTO Investor(InvestorID, FirstName, LastName, Email, MyPassword)
+VALUES (p_InvestorID, p_FirstName, p_LastName, p_Email, p_Password);
+
+INSERT INTO Portfolio (PortfolioID, InvestorID, PortfolioName) 
+VALUES (p_PortfolioID, p_InvestorID, p_PortfolioName);
+
 INSERT INTO Investment (PortfolioID, InvestmentName, InvestmentType, NumShares)
 VALUES (p_PortfolioID, p_InvestmentName, p_InvestmentType, p_NumShares);
 
