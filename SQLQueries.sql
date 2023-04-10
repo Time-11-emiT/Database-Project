@@ -173,6 +173,7 @@ BEGIN
 END$$
 DELIMITER ;
 
+
 DELIMITER $$
 CREATE PROCEDURE percentageChangeInStockPrice(
 	IN p_investmentID INT,
@@ -180,7 +181,7 @@ CREATE PROCEDURE percentageChangeInStockPrice(
     IN p_dateNew DATE
 )
 BEGIN	
-	SELECT ((new_stock_price - old_stock_price) / old_stock_price) * 100 AS percentage_change FROM Market_Data WHERE InvestmentID = p_investmentID AND Date = p_dateNew UNION ALL SELECT ((new_stock_price - old_stock_price) / old_stock_price) * 100 AS percentage_change FROM Market_Data WHERE InvestmentID = p_investmentID AND Date = p_dateOld;
+	SELECT (((SELECT StockPrice FROM market_data WHERE InvestmentID = p_invextmentID AND InvDate = p_dateNew) - (SELECT StockPrice FROM market_data WHERE InvestmentID = p_invextmentID AND InvDate = p_oldNew)) / (SELECT StockPrice FROM market_data WHERE InvestmentID = p_invextmentID AND InvDate = p_dateOld)) * 100 AS percentage_change FROM Market_Data WHERE InvestmentID = p_investmentID AND Date = p_dateNew UNION ALL SELECT (((SELECT StockPrice FROM market_data WHERE InvestmentID = p_invextmentID AND InvDate = p_dateNew) - (SELECT StockPrice FROM market_data WHERE InvestmentID = p_invextmentID AND InvDate = p_dateOld)) / (SELECT StockPrice FROM market_data WHERE InvestmentID = p_invextmentID AND InvDate = p_dateOld)) * 100 AS percentage_change FROM Market_Data WHERE InvestmentID = p_investmentID AND InvDate = (SELECT StockPrice FROM market_data WHERE InvestmentID = p_invextmentID AND InvDate = p_dateOld);
 END$$
 DELIMITER ;
 
