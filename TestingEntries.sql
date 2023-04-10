@@ -12,3 +12,4 @@ CALL findOverallAnnualizedReturns();
 CALL getInflationRate();
 CALL filterStockPrice(1,'2023-04-01','2023-05-01');
 CALL calculateVolatility(1);
+call getTopPerformingStocks();
