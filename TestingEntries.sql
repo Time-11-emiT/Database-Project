@@ -8,3 +8,4 @@ CALL getAverageAnnualizedReturn();
 CALL filterByRiskLevel();
 CALL findTotalValueOfAllInvestments();
 CALL findOverallAnnualizedReturns();
+CALL getInflationRate();
