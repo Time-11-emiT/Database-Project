@@ -3,3 +3,4 @@ CALL insertInvestment(1,'Lakshit', 'Sethi', 'lakshit@gmai.com','Sethi', 1, 'laks
 CALL updateNumberOfShares(1, 50);
 CALL DeleteInvestment(1);
 CALL getTotalReturns();
+CALL getStockPrices('2023-04-10');
