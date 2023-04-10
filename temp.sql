@@ -18,7 +18,7 @@ IN p_RiskLevel FLOAT
 )
 BEGIN
 -- Insert the investment into the Investment table
-INSERT INTO portfolio (PortfolioID, InvestorID, PortfolioName) 
+INSERT INTO Portfolio (PortfolioID, InvestorID, PortfolioName) 
 VALUES (p_PortfolioID, p_InvestorID, p_PortfolioName);
 
 INSERT INTO Investment (PortfolioID, InvestmentName, InvestmentType, NumShares)
