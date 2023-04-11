@@ -1,48 +1,62 @@
 DROP procedure IF EXISTS insertInvestment;
 DROP procedure IF EXISTS updateNumberOfShares;
 
+
 DELIMITER $$
-CREATE PROCEDURE insertInvestment(
-	IN p_InvestorID INT,
-	IN p_FirstName VARCHAR(50),
-	IN p_LastName VARCHAR(50),
-	IN p_Email VARCHAR(50), 
-	IN p_Password VARCHAR(50),
-	IN p_PortfolioID INT,
-	IN p_PortfolioName VARCHAR(50),
-	IN p_InvestmentName VARCHAR(50),
-	IN p_InvestmentType VARCHAR(50),
-	IN p_NumShares INT,
-	IN p_Date DATE,
-	IN p_StockPrice FLOAT,
-	IN p_ExchangeRate FLOAT,
-	IN p_CommodityPrice FLOAT,
-	IN p_TotalReturn FLOAT,
-	IN p_AnnualizedReturn FLOAT,
-	IN p_RiskLevel FLOAT
+CREATE PROCEDURE createInvestor (
+    IN p_email VARCHAR(50),
+    IN p_password VARCHAR(50),
+    IN p_first_name VARCHAR(50),
+    IN p_last_name VARCHAR(50)
 )
 BEGIN
-	-- Insert the investment into the Investment table
-	INSERT INTO Investor(InvestorID, FirstName, LastName, Email, MyPassword)
-	VALUES (p_InvestorID, p_FirstName, p_LastName, p_Email, p_Password);
-
-	INSERT INTO Portfolio (PortfolioID, InvestorID, PortfolioName) 
-	VALUES (p_PortfolioID, p_InvestorID, p_PortfolioName);
-
-	INSERT INTO Investment (PortfolioID, InvestmentName, InvestmentType, NumShares)
-	VALUES (p_PortfolioID, p_InvestmentName, p_InvestmentType, p_NumShares);
-
-	-- Get the InvestmentID of the newly inserted investment
-	SET @InvestmentID = LAST_INSERT_ID();
-
-	-- Insert market data for the investment into the Market_Data table
-	INSERT INTO Market_Data (InvestmentID, Date, StockPrice, ExchangeRate, CommodityPrice)
-	VALUES (@InvestmentID, p_Date, p_StockPrice, p_ExchangeRate, p_CommodityPrice);
-
-	-- Insert performance metrics for the investment into the Performance_Metrics table
-	INSERT INTO Performance_Metrics (InvestmentID, TotalReturn, AnnualizedReturn, RiskLevel)
-	VALUES (@InvestmentID, p_TotalReturn, p_AnnualizedReturn, p_RiskLevel);
+    -- insert investor
+    INSERT INTO Investor (MyPassword, FirstName, LastName, Email)
+    VALUES (p_password, p_first_name, p_last_name, p_email);
+    -- commit transaction
+    COMMIT;
 END$$
+DELIMITER ;
+
+DELIMITER $$
+
+CREATE PROCEDURE createPortfolio (
+    IN p_investor_id INT,
+    IN p_portfolio_name VARCHAR(50)
+)
+BEGIN
+    -- check if investor exists
+    IF EXISTS (SELECT * FROM Investor WHERE InvestorID = p_investor_id) THEN        
+		-- insert portfolio
+		INSERT INTO Portfolio (InvestorID, PortfolioName)
+		VALUES (p_investor_id, p_portfolio_name);
+    END IF;
+    -- commit transaction
+    COMMIT;
+END$$
+DELIMITER;
+
+DELIMITER $$
+CREATE PROCEDURE insertInvestment (
+    IN p_portfolio_id INT,
+    IN p_investment_name VARCHAR(50),
+    IN p_investment_type VARCHAR(50),
+    IN p_num_shares INT
+)
+BEGIN
+    DECLARE v_investor_id INT;
+    -- get investor id from portfolio id
+    SELECT InvestorID INTO v_investor_id FROM Portfolio WHERE PortfolioID = p_portfolio_id;
+    -- check if investor exists
+    IF v_investor_id IS NOT NULL THEN
+		-- insert investment
+		INSERT INTO Investment (PortfolioID, InvestmentName, InvestmentType, NumShares)
+		VALUES (p_portfolio_id, p_investment_name, p_investment_type, p_num_shares);
+    END IF;
+    -- commit transaction
+    COMMIT;
+END$$
+
 DELIMITER ;
 
 DELIMITER $$
