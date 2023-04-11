@@ -175,26 +175,17 @@ DELIMITER ;
 
 
 DELIMITER $$
-CREATE PROCEDURE percentageChangeInStockPrice(
-	IN p_investmentID INT,
-    	IN p_dateOld  DATE,
-    	IN p_dateNew DATE
-)
-BEGIN	
-	SELECT (((SELECT StockPrice FROM Market_Data WHERE InvestmentID = p_investmentID AND Date = p_dateNew) - (SELECT StockPrice FROM Market_Data WHERE InvestmentID = p_investmentID AND Date = p_dateOld)) / (SELECT StockPrice FROM Market_Data WHERE InvestmentID = p_investmentID AND Date = p_dateOld)) * 100 AS percentage_change FROM Market_Data WHERE InvestmentID = p_investmentID AND Date = p_dateNew UNION ALL SELECT (((SELECT StockPrice FROM Market_Data WHERE InvestmentID = p_investmentID AND Date = p_dateNew) - (SELECT StockPrice FROM Market_Data WHERE InvestmentID = p_investmentID AND Date = p_dateOld)) / (SELECT StockPrice FROM Market_Data WHERE InvestmentID = p_investmentID AND Date = p_dateOld)) * 100 AS percentage_change FROM Market_Data WHERE InvestmentID = p_investmentID AND Date = (SELECT StockPrice FROM Market_Data WHERE InvestmentID = p_investmentID AND Date = p_dateOld);
-END$$
-DELIMITER ;
-
-DELIMITER $$
 CREATE PROCEDURE percentageChangeInStockPriceByName(
     IN p_investmentName VARCHAR(255),
     IN p_dateOld DATE,
     IN p_dateNew DATE
 )
 BEGIN    
-    SELECT (((SELECT StockPrice FROM Market_Data md JOIN Investment i ON md.InvestmentID = i.InvestmentID WHERE i.InvestmentName = p_investmentName AND Date = p_dateNew) - (SELECT StockPrice FROM Market_Data md JOIN Investment i ON md.InvestmentID = i.InvestmentID WHERE i.InvestmentName = p_investmentName AND Date = p_dateOld)) / (SELECT StockPrice FROM Market_Data md JOIN Investment i ON md.InvestmentID = i.InvestmentID WHERE i.InvestmentName = p_investmentName AND Date = p_dateOld)) * 100 AS percentage_change FROM Market_Data md JOIN Investment i ON md.InvestmentID = i.InvestmentID WHERE i.InvestmentName = p_investmentName AND Date = p_dateNew UNION ALL SELECT (((SELECT StockPrice FROM Market_Data md JOIN Investment i ON md.InvestmentID = i.InvestmentID WHERE i.InvestmentName = p_investmentName AND Date = p_dateNew) - (SELECT StockPrice FROM Market_Data md JOIN Investment i ON md.InvestmentID = i.InvestmentID WHERE i.InvestmentName = p_investmentName AND Date = p_dateOld)) / (SELECT StockPrice FROM Market_Data md JOIN Investment i ON md.InvestmentID = i.InvestmentID WHERE i.InvestmentName = p_investmentName AND Date = p_dateOld)) * 100 AS percentage_change FROM Market_Data md JOIN Investment i ON md.InvestmentID = i.InvestmentID WHERE i.InvestmentName = p_investmentName AND Date = (SELECT StockPrice FROM Market_Data md JOIN Investment i ON md.InvestmentID = i.InvestmentID WHERE i.InvestmentName = p_investmentName AND Date = p_dateOld);
+    SELECT (((SELECT StockPrice FROM Market_Data md JOIN Investment i ON md.InvestmentID = i.InvestmentID WHERE i.InvestmentName = p_investmentName AND InvDate = p_dateNew) - (SELECT StockPrice FROM Market_Data md JOIN Investment i ON md.InvestmentID = i.InvestmentID WHERE i.InvestmentName = p_investmentName AND InvDate = p_dateOld)) / (SELECT StockPrice FROM Market_Data md JOIN Investment i ON md.InvestmentID = i.InvestmentID WHERE i.InvestmentName = p_investmentName AND InvDate = p_dateOld)) * 100 AS percentage_change;
 END$$
 DELIMITER ;
+
+
 
 
 DELIMITER $$
