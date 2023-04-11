@@ -187,7 +187,7 @@ DELIMITER ;
 
 DELIMITER $$
 CREATE PROCEDURE calculateVolatility(
-	IN p_investmentID INT
+	IN p_investmentName VARCHAR(255)
 )
 BEGIN	
 	SELECT STDDEV(pm.TotalReturn) AS Volatility FROM Performance_Metrics pm JOIN Investment i ON pm.InvestmentId = i.InvestmentId WHERE i.InvestmentName = '{investment_name}';
