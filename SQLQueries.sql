@@ -77,12 +77,12 @@ DELIMITER ;
 
 DELIMITER $$
 CREATE PROCEDURE updateNumberOfShares(
-IN p_investmentID INT,
-IN new_num_shares INT
+	IN p_investmentID INT,
+	IN new_num_shares INT
 )
 BEGIN
--- Update the investment in the Investment table where InvestmentID = p_investmentID
-update investment SET investment.NumShares = new_num_shares WHERE investment.InvestmentID=p_investmentID;
+	-- Update the investment in the Investment table where InvestmentID = p_investmentID
+	update investment SET investment.NumShares = new_num_shares WHERE investment.InvestmentID=p_investmentID;
 END$$
 DELIMITER ;
 
@@ -212,7 +212,40 @@ BEGIN
 END$$
 DELIMITER ;
 
+SELECT * FROM Investor;
+CALL createInvestor('johndoe123@gmail.com', 'JohnDoe123', 'John', 'Doe');
+CALL createInvestor('janedoe456@gmail.com', 'JaneDoe456', 'Jane', 'Doe');
+CALL createInvestor('bobsmith789@gmail.com', 'BobSmith789', 'Bob', 'Smith');
+CALL createInvestor('amandabrown234@gmail.com', 'AmandaBrown234', 'Amanda', 'Brown');
+CALL createInvestor('michaeljones567@gmail.com', 'MichaelJones567', 'Michael', 'Jones');
+CALL createInvestor('YashBarge@gmail.com', 'Yash123', 'Yash', 'Barge');
+CALL createInvestor('SourabhB@gmail.com', 'Sourabh12345', 'Sourabh', 'Bhandari');
+CALL createInvestor('bobshoe@gmail.com', 'bobs789', 'Bob', 'Shoe');
+CALL createInvestor('alicelee@gmail.com', 'alicelee246', 'Alice', 'Lee');
+CALL createInvestor('davidkim@gmail.com', 'davidkim135', 'David', 'Kim');
+SELECT * FROM Investor;
 
 
+SELECT * FROM PORTFOLIO;
+CALL createPortfolio(1, 'JohnDoePortfolio1');
+CALL createPortfolio(1, 'JohnDoePortfolio2');
+CALL createPortfolio(2, 'JaneDoePortfolio1');
+CALL createPortfolio(3, 'BobSmithPortfolio1');
+CALL createPortfolio(4, 'AmandaBrownPortfolio1');
+CALL createPortfolio(4, 'AmandaBrownPortfolio2');
+SELECT * FROM PORTFOLIO;
 
-With these queries, write 5 call statements to add investors
+SELECT * FROM INVESTMENT;
+CALL insertInvestment(1, 'APPL', 'STOCK', 50);
+CALL insertInvestment(2, 'APPL', 'STOCK', 20);
+CALL insertInvestment(2, 'GOOG', 'STOCK', 10);
+CALL insertInvestment(3, 'TSLA', 'STOCK', 15);
+CALL insertInvestment(4, 'JPMC', 'STOCK', 5);
+CALL insertInvestment(5, 'RELI', 'STOCK', 40);
+CALL insertInvestment(5, 'TATA', 'STOCK', 60);
+SELECT * FROM INVESTMENT;
+
+CALL updateNumberOfShares(1, 10);
+CALL updateNumberOfShares(3, 5);
+CALL updateNumberOfShares(4, 50);
+SELECT * FROM investment;
