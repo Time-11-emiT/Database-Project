@@ -25,7 +25,7 @@ CREATE TABLE Investment (
 CREATE TABLE Market_Data (
   MarketDataID INT PRIMARY KEY AUTO_INCREMENT,
   InvestmentID INT,
-  Date DATE,
+  InvDate DATE,
   StockPrice FLOAT,
   ExchangeRate FLOAT,
   CommodityPrice FLOAT,
@@ -40,7 +40,7 @@ CREATE TABLE Performance_Metrics (
   FOREIGN KEY (InvestmentID) REFERENCES Investment(InvestmentID) ON DELETE CASCADE
 );
 CREATE TABLE Other_Financial_Information (
-	Date DATE PRIMARY KEY,
+    InvDate DATE PRIMARY KEY,
     Interest_Rate FLOAT,
     Inflation_Rate FLOAT,
     GDP_Growth_Rate FLOAT
