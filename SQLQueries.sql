@@ -190,10 +190,14 @@ CREATE PROCEDURE calculateVolatility(
 	IN p_investmentName VARCHAR(255)
 )
 BEGIN	
-	SELECT STDDEV(pm.TotalReturn) AS Volatility FROM Performance_Metrics pm JOIN Investment i ON pm.InvestmentId = i.InvestmentId WHERE i.InvestmentName = '{investment_name}';
-
+	SET @query = CONCAT('SELECT STDDEV(pm.TotalReturn) AS Volatility FROM Performance_Metrics pm JOIN Investment i ON pm.InvestmentId = i.InvestmentId WHERE i.InvestmentName = ''', p_investmentName, ''';');
+	
+	PREPARE stmt FROM @query;
+	EXECUTE stmt;
+	DEALLOCATE PREPARE stmt;
 END$$
 DELIMITER ;
+
 
 DELIMITER $$
 CREATE PROCEDURE getTopPerformingStocks()
