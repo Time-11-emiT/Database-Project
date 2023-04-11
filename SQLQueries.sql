@@ -16,6 +16,27 @@ DROP procedure IF EXISTS percentageChangeInStockPrice;
 DROP procedure IF EXISTS calculateVolatility;
 DROP procedure IF EXISTS getTopPerformingStocks;
 DROP procedure IF EXISTS numberOfSharesForEachInvestmentType;
+DROP procedure IF EXISTS insertMarketData;
+
+DELIMITER $$
+CREATE PROCEDURE insertMarketData (
+    IN p_investment_id INT,
+    IN p_date DATE,
+    IN p_stock_price FLOAT,
+    IN p_exchange_rate FLOAT,
+    IN p_commodity_price FLOAT
+)
+BEGIN
+    -- check if investment exists
+    IF EXISTS(SELECT * FROM Investment WHERE InvestmentID = p_investment_id) THEN
+		-- insert market data
+		INSERT INTO Market_Data (InvestmentID, Date, StockPrice, ExchangeRate, CommodityPrice)
+		VALUES (p_investment_id, p_date, p_stock_price, p_exchange_rate, p_commodity_price);
+    END IF;
+    -- commit transaction
+    COMMIT;
+END$$
+DELIMITER ;
 
 
 DELIMITER $$
@@ -57,7 +78,11 @@ CREATE PROCEDURE insertInvestment (
     IN p_portfolio_id INT,
     IN p_investment_name VARCHAR(50),
     IN p_investment_type VARCHAR(50),
-    IN p_num_shares INT
+    IN p_num_shares INT,
+    p_date DATE,
+    p_stock_price FLOAT,
+    p_exchange_rate FLOAT, 
+    p_commodity_price FLOAT
 )
 BEGIN
     DECLARE v_investor_id INT;
@@ -68,6 +93,7 @@ BEGIN
 		-- insert investment
 		INSERT INTO Investment (PortfolioID, InvestmentName, InvestmentType, NumShares)
 		VALUES (p_portfolio_id, p_investment_name, p_investment_type, p_num_shares);
+        CALL insertMarketData(p_investor_id, p_date, p_stock_price,p_exchange_rate, p_commodity_price);
     END IF;
     -- commit transaction
     COMMIT;
@@ -212,6 +238,7 @@ BEGIN
 END$$
 DELIMITER ;
 
+
 SELECT * FROM Investor;
 CALL createInvestor('johndoe123@gmail.com', 'JohnDoe123', 'John', 'Doe');
 CALL createInvestor('janedoe456@gmail.com', 'JaneDoe456', 'Jane', 'Doe');
@@ -248,4 +275,7 @@ SELECT * FROM INVESTMENT;
 CALL updateNumberOfShares(1, 10);
 CALL updateNumberOfShares(3, 5);
 CALL updateNumberOfShares(4, 50);
+SELECT * FROM investment;
+
+CALL deleteInvestment(1);
 SELECT * FROM investment;
