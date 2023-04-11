@@ -30,7 +30,7 @@ BEGIN
     -- check if investment exists
     IF EXISTS(SELECT * FROM Investment WHERE InvestmentID = p_investment_id) THEN
 		-- insert market data
-		INSERT INTO Market_Data (InvestmentID, Date, StockPrice, ExchangeRate, CommodityPrice)
+		INSERT INTO Market_Data (InvestmentID, InvDate, StockPrice, ExchangeRate, CommodityPrice)
 		VALUES (p_investment_id, p_date, p_stock_price, p_exchange_rate, p_commodity_price);
     END IF;
     -- commit transaction
@@ -79,10 +79,10 @@ CREATE PROCEDURE insertInvestment (
     IN p_investment_name VARCHAR(50),
     IN p_investment_type VARCHAR(50),
     IN p_num_shares INT,
-    p_date DATE,
-    p_stock_price FLOAT,
-    p_exchange_rate FLOAT, 
-    p_commodity_price FLOAT
+    IN p_date DATE,
+    IN p_stock_price FLOAT,
+    IN p_exchange_rate FLOAT, 
+    IN p_commodity_price FLOAT
 )
 BEGIN
     DECLARE v_investor_id INT;
@@ -93,7 +93,7 @@ BEGIN
 		-- insert investment
 		INSERT INTO Investment (PortfolioID, InvestmentName, InvestmentType, NumShares)
 		VALUES (p_portfolio_id, p_investment_name, p_investment_type, p_num_shares);
-        CALL insertMarketData(p_investor_id, p_date, p_stock_price,p_exchange_rate, p_commodity_price);
+        CALL insertMarketData(v_investor_id, p_date, p_stock_price,p_exchange_rate, p_commodity_price);
     END IF;
     -- commit transaction
     COMMIT;
@@ -263,13 +263,13 @@ CALL createPortfolio(4, 'AmandaBrownPortfolio2');
 SELECT * FROM PORTFOLIO;
 
 SELECT * FROM INVESTMENT;
-CALL insertInvestment(1, 'APPL', 'STOCK', 50);
-CALL insertInvestment(2, 'APPL', 'STOCK', 20);
-CALL insertInvestment(2, 'GOOG', 'STOCK', 10);
-CALL insertInvestment(3, 'TSLA', 'STOCK', 15);
-CALL insertInvestment(4, 'JPMC', 'STOCK', 5);
-CALL insertInvestment(5, 'RELI', 'STOCK', 40);
-CALL insertInvestment(5, 'TATA', 'STOCK', 60);
+CALL insertInvestment(1, 'APPL', 'STOCK', 50, '2023-04-11', 98, 3431, 8234);
+CALL insertInvestment(2, 'APPL', 'STOCK', 20, '2023-04-11', 8,31411,8221);
+CALL insertInvestment(2, 'GOOG', 'STOCK', 10, '2023-04-11', 698,3132,8264);
+CALL insertInvestment(3, 'TSLA', 'STOCK', 15, '2023-04-11', 928,3142,8212);
+CALL insertInvestment(4, 'JPMC', 'STOCK', 5, '2023-04-11', 981,314,8452);
+CALL insertInvestment(5, 'RELI', 'STOCK', 40, '2023-04-11', 9348,3221,582);
+CALL insertInvestment(5, 'TATA', 'STOCK', 60, '2023-04-11', 928,351,8);
 SELECT * FROM INVESTMENT;
 
 CALL updateNumberOfShares(1, 10);
@@ -279,3 +279,5 @@ SELECT * FROM investment;
 
 CALL deleteInvestment(1);
 SELECT * FROM investment;
+
+-- CALL getTotalReturns(); This query will not work currently as our queries have only taken values at one date, and for performance metrics, we need multiple date data.
